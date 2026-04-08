@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Deep Analysis Engine</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: #050507;
+            --surface: #0f0f15;
+            --panel: #161620;
+            --accent: #22d17a;
+            --ai-purple: #8b5cf6;
+            --border: #2a2a3a;
+            --text: #e2e8f0;
+            --text-dim: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', system-ui, sans-serif;
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .symbol-badge {
+            background: var(--ai-purple);
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-dim);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* AI Status Pulse */
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 10px var(--accent);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Terminal Console Styling */
+        .console {
+            background: #000;
+            font-family: 'Courier New', monospace;
+            padding: 15px;
+            border-radius: 8px;
+            height: 200px;
+            overflow-y: auto;
+            font-size: 13px;
+            color: #22d17a;
+            border: 1px solid #1a1a25;
+        }
+
+        .console-line {
+            margin-bottom: 5px;
+        }
+
+        .console-time {
+            color: #5b8af5;
+            margin-right: 10px;
+        }
+
+        /* Prediction Gauge */
+        .prediction-box {
+            text-align: center;
+            padding: 30px;
+            border-radius: 12px;
+            background: rgba(139, 92, 246, 0.05);
+            border: 1px dashed var(--ai-purple);
+        }
+
+        .pred-value {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--ai-purple);
+            margin: 10px 0;
+        }
+
+        .btn-back {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .btn-back:hover {
+            color: white;
+        }
+
+        #aiChart {
+            height: 300px !important;
+        }
+
+        @media (max-width: 900px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <div>
+            <a href="index.html" class="btn-back">← Exit Engine</a>
+            <h2 style="margin-top: 5px;">AI Prediction Engine <span class="symbol-badge" id="displaySymbol">---</span>
+            </h2>
+        </div>
+        <div style="text-align: right;">
+            <div class="card-title"><span class="status-dot"></span> Neural Network Active</div>
+        </div>
+    </div>
+
+    <div class="grid-container">
+        <div class="main-col">
+            <div class="card" style="margin-bottom: 20px;">
+                <div class="card-title">Projected Price Movement (Next 24h)</div>
+                <canvas id="aiChart"></canvas>
+            </div>
+
+            <div class="card">
+                <div class="card-title">AI Processing Logs</div>
+                <div class="console" id="aiConsole">
+                    <div class="console-line"><span class="console-time">[14:02:01]</span> Initializing TensorData
+                        streams...</div>
+                    <div class="console-line"><span class="console-time">[14:02:03]</span> Fetching historical
+                        volatility patterns...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="side-col">
+            <div class="card" style="margin-bottom: 20px;">
+                <div class="card-title">Sentiment Analysis</div>
+                <div class="prediction-box">
+                    <div style="font-size: 12px;">PROBABILITY SCORE</div>
+                    <div class="pred-value" id="aiScore">84%</div>
+                    <div style="color: var(--accent); font-weight: 700;">STRONGLY BULLISH</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">AI Model Specs</div>
+                <div style="font-size: 13px;">
+                    <p style="margin-bottom: 10px; display: flex; justify-content: space-between;">
+                        <span>Model:</span> <span style="color:white">LSTM-v4.2</span>
+                    </p>
+                    <p style="margin-bottom: 10px; display: flex; justify-content: space-between;">
+                        <span>Data Points:</span> <span style="color:white">1.2M+</span>
+                    </p>
+                    <p style="margin-bottom: 10px; display: flex; justify-content: space-between;">
+                        <span>Confidence:</span> <span style="color:white">High</span>
+                    </p>
+                    <hr style="border:0; border-top:1px solid var(--border); margin:15px 0;">
+                    <p style="color: var(--text-dim); font-size: 11px;">
+                        *AI predictions are probabilistic and not financial advice.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const symbol = urlParams.get('symbol') || 'TCS';
+            document.getElementById('displaySymbol').innerText = symbol;
+
+            const consoleEl = document.getElementById('aiConsole');
+            const logMsg = (msg) => {
+                const time = new Date().toLocaleTimeString('en-US', { hour12: false });
+                consoleEl.innerHTML += `<div class="console-line"><span class="console-time">[${time}]</span> ${msg}</div>`;
+                consoleEl.scrollTop = consoleEl.scrollHeight;
+            };
+
+            logMsg(`Initializing neural network model for ${symbol}...`);
+            logMsg(`Fetching 10 years of historical data for ${symbol}.NS...`);
+            logMsg(`Training RandomForestClassifier...`);
+
+            try {
+                const response = await fetch(`http://localhost:5000/api/predict?ticker=${symbol}.NS`);
+                const data = await response.json();
+
+                if (data.error) {
+                    logMsg(`<span style="color:red">Error: ${data.error}</span>`);
+                    document.getElementById('aiScore').innerText = 'ERROR';
+                    document.getElementById('aiScore').nextElementSibling.innerText = 'FAILED TO PREDICT';
+                    document.getElementById('aiScore').nextElementSibling.style.color = "var(--accent-red)";
+                } else {
+                    logMsg(`Training complete. Model Precision: ${data.precision}`);
+                    logMsg(`Generating predictions for next trading session...`);
+                    logMsg(`<span style="color:var(--accent)">Prediction finalized: ${data.prediction}</span>`);
+
+                    document.getElementById('aiScore').innerText = data.precision;
+                    const predEl = document.getElementById('aiScore').nextElementSibling;
+                    if (data.prediction === "UP") {
+                        predEl.innerText = 'BULLISH (UP)';
+                        predEl.style.color = 'var(--accent)';
+                    } else {
+                        predEl.innerText = 'BEARISH (DOWN)';
+                        predEl.style.color = '#ef4444'; // Red
+                    }
+                }
+            } catch (e) {
+                logMsg(`<span style="color:red">Network Error: Backend may not be running.</span>`);
+                document.getElementById('aiScore').innerText = '--';
+                document.getElementById('aiScore').nextElementSibling.innerText = 'SERVER OFFLINE';
+            }
+        });
+    </script>
+</body>
+
+</html>

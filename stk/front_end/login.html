@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        :root {
+            --bg: #0a0a0c;
+            --surface: #16161e;
+            --primary: #22d17a; /* Match your green */
+            --primary-glow: rgba(34, 209, 122, 0.2);
+            --border: #2a2a36;
+            --text: #f0eeff;
+            --text-dim: #9896b0;
+            --error: #f25757;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(34, 209, 122, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(91, 138, 245, 0.05) 0%, transparent 40%);
+            color: var(--text);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo-area {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-glow);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 24px;
+            margin: 0 auto 15px;
+        }
+
+        h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5px; }
+        p { color: var(--text-dim); font-size: 14px; margin-bottom: 25px; }
+
+        .form-group { margin-bottom: 20px; text-align: left; }
+        label { 
+            display: block; 
+            font-size: 12px; 
+            font-weight: 600; 
+            color: var(--text-dim); 
+            margin-bottom: 8px; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            background: #0f0f13;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: white;
+            font-size: 15px;
+            transition: all 0.2s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-glow);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: #0a1a0f;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.1s active, filter 0.2s;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover { filter: brightness(1.1); }
+        .login-btn:active { transform: scale(0.98); }
+
+        #error-msg {
+            background: rgba(242, 87, 87, 0.1);
+            color: var(--error);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            display: none;
+            border: 1px solid rgba(242, 87, 87, 0.2);
+        }
+
+        .footer-links {
+            margin-top: 25px;
+            font-size: 13px;
+            color: var(--text-dim);
+        }
+
+        .footer-links a { color: var(--primary); text-decoration: none; }
+    </style>
+</head>
+<body><div class="login-container">
+    <div class="login-card">
+        <div class="logo-area">
+            <div class="logo-icon">S</div>
+            <h1>Premium Access</h1>
+            <p>Login to unlock Deep Analysis tools</p>
+        </div>
+
+        <div id="error-msg">Invalid credentials. Please try again.</div>
+
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="username" placeholder="e.g. trader_pro">
+        </div>
+
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="password" placeholder="••••••••">
+        </div>
+
+        <button class="login-btn" onclick="handleLogin()">Unlock Analysis</button>
+
+        <div class="footer-links">
+            Don't have an account? <a href="#">Create one</a>
+        </div>
+    </div>
+</div>
+
+<script>
+function handleLogin() {
+    console.log("Login function started...");
+    const user = document.getElementById('username').value.trim();
+    const pass = document.getElementById('password').value.trim();
+    const error = document.getElementById('error-msg');
+
+    // This checks if the user typed ANYTHING in both boxes
+    if (user !== "" && pass !== "") {
+        console.log("Input detected. Granting access...");
+        
+        // 1. Set the session so other pages know we are "logged in"
+        sessionStorage.setItem("isLoggedIn", "true");
+
+        // 2. Logic to decide where to send the user
+        const urlParams = new URLSearchParams(window.location.search);
+        let destination = urlParams.get('redirect');
+
+        if (destination) {
+            console.log("Redirecting to: " + decodeURIComponent(destination));
+            window.location.href = decodeURIComponent(destination);
+        } else {
+            console.log("No specific redirect. Going to index.html");
+            window.location.href = "index.html"; 
+        }
+    } else {
+        console.log("Login failed: Fields are empty.");
+        // Show error only if they left the boxes blank
+        error.textContent = "Please enter a username and password.";
+        error.style.display = "block";
+    }
+}
+</script>
+
+
+</body>
+

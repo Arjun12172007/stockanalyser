@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>STOCKS – Stock Analysis & Screening Tool</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<script>
+function handleSearch() {
+    const symbol = document.getElementById('searchInput').value.toUpperCase().trim();
+
+    if (!symbol) {
+        alert("Please enter a stock symbol (e.g., RELIANCE)");
+        return;
+    }
+
+    const isLoggedIn = sessionStorage.getItem("isLoggedIn");
+
+    if (isLoggedIn === "true") {
+        window.location.href = `analysis.html?symbol=${symbol}`;
+    } else {
+        window.location.href = `login.html?redirect=${encodeURIComponent("analysis.html?symbol=" + symbol)}`;
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const input = document.getElementById("searchInput");
+
+    input.addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            handleSearch();
+        }
+    });
+});
+function quickSearch(symbol) {
+    const isLoggedIn = sessionStorage.getItem("isLoggedIn");
+
+    if (isLoggedIn === "true") {
+        window.location.href = `analysis.html?symbol=${symbol}`;
+    } else {
+        window.location.href = `login.html?redirect=${encodeURIComponent("analysis.html?symbol=" + symbol)}`;
+    }
+}
+
+</script>
+
+<header class="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="logo">
+      <span class="logo-icon">▲</span>
+      <span class="logo-text">STOCKS</span>
+    </a>
+
+    <nav class="nav-links">
+      <a href="index.html" class="active">Home</a>
+      <a href="#">STOCKS</a>
+
+      <div class="dropdown">
+        <button class="dropdown-btn">Tools ▾</button>
+        <div class="dropdown-menu">
+          <a href="#">Create a stock screen</a>
+          <hr/>
+          <a href="#">Screener AI</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="nav-actions">
+      <a href="login.html" class="btn-login">Login</a>
+      <a href="#" onclick="logout()" class="btn-signup">Logout</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+
+  <div class="hero-content">
+    <div class="hero-badge">🇮🇳 Built for Indian Investors</div>
+
+    <h1 class="hero-title">
+      Find the right<br/>
+      <span class="highlight">Indian stocks</span><br/>
+      faster.
+    </h1>
+
+    <p class="hero-sub">
+      Fundamental analysis, financial screening & deep data.
+    </p>
+
+    <!-- 🔍 SEARCH -->
+    <div class="search-wrap">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search company e.g. Infosys">
+        <button class="btn-analyse" onclick="handleSearch()">Analyse →</button>
+      </div>
+    </div>
+
+    <!-- QUICK LINKS -->
+    <div class="hero-suggestions">
+      <span>Try:</span>
+      <a href="#" onclick="quickSearch('TCS')">TCS</a>
+      <a href="#" onclick="quickSearch('RELIANCE')">Reliance</a>
+      <a href="#" onclick="quickSearch('INFY')">Infosys</a>
+    </div>
+
+  </div>
+
+</section>
+<!-- LOGOUT SCRIPT -->
+<script>
+function logout() {
+    sessionStorage.removeItem("isLoggedIn");
+    alert("Logged out!");
+    window.location.reload();
+}
+  </script>
+
+  <section class="features-grid">
+      <div class="f-card">
+          <h3>Live Market Data</h3>
+          <p>Real-time price tracking for over 5,000+ Indian companies with advanced interactive charts.</p>
+      </div>
+      <div class="f-card">
+          <h3>AI Deep Analysis</h3>
+          <p>Our proprietary ML model analyzes 10 years of historical data to predict potential price trends.</p>
+      </div>
+      <div class="f-card">
+          <h3>Fundamental Health</h3>
+          <p>Instantly check P/E ratios, Market Cap, and EPS to ensure you are investing in quality businesses.</p>
+      </div>
+  </section>
+
+  <section class="how-it-works">
+      <h2 class="section-title">Smart Investing in <span class="highlight-green">3 Steps</span></h2>
+      <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;">
+          <div style="max-width: 250px;">
+              <div style="font-size: 40px;">01</div>
+              <h4>Search Ticker</h4>
+              <p style="color: #9896b0;">Enter any NSE/BSE symbol to fetch live metrics.</p>
+          </div>
+          <div style="max-width: 250px;">
+              <div style="font-size: 40px;">02</div>
+              <h4>Verify Data</h4>
+              <p style="color: #9896b0;">Review 52-week highs, lows, and fundamental ratios.</p>
+          </div>
+          <div style="max-width: 250px;">
+              <div style="font-size: 40px;">03</div>
+              <h4>Run AI Model</h4>
+              <p style="color: #9896b0;">Click the Analysis button to trigger our neural network engine.</p>
+          </div>
+      </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-container">
+      <p>© 2026 STOCKS AI. For educational purposes only.</p>
+    </div>
+  </footer>
+
+  <script>
+  // Check if user is logged in to change buttons
+  document.addEventListener("DOMContentLoaded", () => {
+      const isLoggedIn = sessionStorage.getItem("isLoggedIn");
+      const authSection = document.getElementById("authSection");
+      if (isLoggedIn === "true") {
+          authSection.innerHTML = `<a href="#" onclick="logout()" class="btn-signup">Logout</a>`;
+      }
+  });
+
+  function handleSearch() {
+      const symbol = document.getElementById('searchInput').value.toUpperCase().trim();
+      if (!symbol) return alert("Enter a symbol!");
+      
+      const isLoggedIn = sessionStorage.getItem("isLoggedIn");
+      const target = `analysis.html?symbol=${symbol}`;
+      
+      if (isLoggedIn === "true") {
+          window.location.href = target;
+      } else {
+          window.location.href = `login.html?redirect=${encodeURIComponent(target)}`;
+      }
+  }   
+
+  function quickSearch(s) {
+      document.getElementById('searchInput').value = s;
+      handleSearch();
+  }
+
+  function logout() {
+      sessionStorage.removeItem("isLoggedIn");
+      window.location.reload();
+  }
+  </script>
+
+  </body>
+  </html>
